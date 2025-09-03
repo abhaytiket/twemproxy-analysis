@@ -1,0 +1,17 @@
+{
+    "name": "TWEMPROXY-ANALYSIS",
+    "dockerComposeFile": "docker-compose.yml",
+    "workspaceFolder": "/app",
+    "service": "twemproxy-analysis-application",
+    "customizations": {
+        "vscode": {
+            "settings": {},
+            "extensions": [
+                "golang.go",
+                "eamodio.gitlens",
+                "GitHub.copilot"
+            ]
+        }
+    },
+    "overrideCommand": true
+}

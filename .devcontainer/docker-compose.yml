@@ -1,0 +1,44 @@
+services:
+  twemproxy-analysis-redis1:
+    image: redis:6.2.19
+    restart: always
+    container_name: twemproxy-analysis-redis1
+    networks:
+      - twemproxy-analysis-net
+    command: ["redis-server",  "--save", ""]
+  twemproxy-analysis-redis2:
+    image: redis:6.2.19
+    restart: always
+    container_name: twemproxy-analysis-redis2
+    networks:
+      - twemproxy-analysis-net
+    command: ["redis-server",  "--save", ""]
+  twemproxy-analysis-twemproxy:
+    image: asia-southeast1-docker.pkg.dev/tk-dev-micro/base-image/twemproxy:latest
+    restart: always
+    container_name: twemproxy-analysis-twemproxy
+    volumes:
+      - ./twemproxy:/twemproxy
+    command: ["nutcracker", "-c", "/twemproxy/twemproxy.conf"]
+    depends_on:
+      - twemproxy-analysis-redis1
+      - twemproxy-analysis-redis2
+    networks:
+      - twemproxy-analysis-net
+  twemproxy-analysis-application:
+    container_name: twemproxy-analysis-application
+    build: .
+    restart: always
+    env_file:
+      - .env.local
+    volumes:
+      - ..:/app
+    depends_on:
+      - twemproxy-analysis-redis1
+      - twemproxy-analysis-redis2
+      - twemproxy-analysis-twemproxy
+    networks:
+      - twemproxy-analysis-net
+networks:
+  twemproxy-analysis-net:
+    driver: bridge
